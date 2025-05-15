@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>GitHub Upload</title><style>body{font-family:sans-serif;padding:2em}input,button{margin-top:10px;padding:10px;width:100%}</style></head>
+<body>
+<h2>Blockchain an GitHub senden</h2>
+<input id="user" placeholder="GitHub Username">
+<input id="repo" placeholder="Repo Name">
+<input id="token" placeholder="GitHub Token">
+<button onclick="upload()">Upload starten</button>
+<pre id="result"></pre>
+<script>
+async function upload(){
+  const user=document.getElementById("user").value.trim();
+  const repo=document.getElementById("repo").value.trim();
+  const token=document.getElementById("token").value.trim();
+  const content=localStorage.getItem("chain");
+  const file="blocks.json";
+  const base="https://api.github.com/repos/"+user+"/"+repo+"/contents/"+file;
+  const res1=await fetch(base,{headers:{Authorization:"token "+token}});
+  const d=await res1.json();
+  const sha=d.sha||"";
+  const res2=await fetch(base,{method:"PUT",headers:{"Authorization":"token "+token,"Content-Type":"application/json"},body:JSON.stringify({
+    message:"Update blocks.json",
+    content:btoa(unescape(encodeURIComponent(content))),
+    sha
+  })});
+  const result=await res2.json();
+  document.getElementById("result").textContent=JSON.stringify(result,null,2);
+}
+</script>
+</body>
+</html>

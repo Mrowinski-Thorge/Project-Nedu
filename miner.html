@@ -1,0 +1,21 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Nedu Miner</title>
+  <style>body{font-family:sans-serif;padding:2em}input,button{width:100%;padding:10px;margin-top:10px}</style>
+</head>
+<body>
+<h2>Nedu Browser Miner</h2>
+<input id="seed" placeholder="Seed Phrase (12 Wörter)">
+<input id="pass" placeholder="Mining Passwort">
+<button onclick="mine()">Mining starten</button>
+<pre id="log"></pre>
+<script>
+let chain=JSON.parse(localStorage.getItem("chain")||"[]");
+async function sha(t){let b=new TextEncoder().encode(t);let h=await crypto.subtle.digest("SHA-256",b);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,"0")).join("")}
+async function mine(){let s=document.getElementById("seed").value;if(!s)return;let a=(await sha(s)).slice(0,16),p=chain.length?chain[chain.length-1].hash:"0",i=chain.length,t=Date.now(),n=0,h,r;let d=4,q=81;while(1){let c=p+i+t+a+q+n;r=await sha(c);if(r.startsWith("0".repeat(d)))break;n++}let b={index:i,timestamp:t,prevHash:p,miner:a,reward:q,nonce:n,hash:r};chain.push(b);localStorage.setItem("chain",JSON.stringify(chain));let bk="bal_"+a,old=+localStorage.getItem(bk)||0;localStorage.setItem(bk,(old+q).toFixed(2));document.getElementById("log").textContent="Block gefunden!\n"+JSON.stringify(b,null,2)}
+</script>
+</body>
+</html>

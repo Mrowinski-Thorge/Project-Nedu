@@ -1,0 +1,11 @@
+[
+  {
+    "index": 0,
+    "timestamp": 1715770000000,
+    "prevHash": "0",
+    "miner": "GENESIS",
+    "reward": 0,
+    "nonce": 0,
+    "hash": "0000000000000000GENESIS"
+  }
+]
